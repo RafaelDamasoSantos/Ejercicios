@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+
+    <script src="https://cdn.rawgit.com/download/polymer-cdn/2.6.0/lib/webcomponentsjs/webcomponents-loader.js"></script>
+    <link rel="import" href="https://cdn.rawgit.com/download/polymer-cdn/2.6.0/lib/iron-ajax/iron-ajax.html">
+    <link rel="import" href="https://cdn.rawgit.com/download/polymer-cdn/2.6.0/lib/polymer/polymer-element.html">
+</head>
+
+<body>
+    <mi-carro></mi-carro>
+
+    <dom-module id="mi-carro">
+        <template>
+            <style>
+                :host{ display: block; background-color: cyan;} 
+                .rojo { background-color: red}
+                .azul {background-color: blueviolet}              
+            </style>
+            <div class$=[[clasee]]>[[buscador]]  [[anio]]</div><br>
+            <h3>Nombre: <input type="text" value="{{buscador::input}}"></h3>      
+            <mi-hijo buscador="{{buscador}}" anio="{{anio}}" clasee="{{clasee}}"></mi-hijo>      
+        </template>
+        <script>
+            class MiCarro extends Polymer.Element {
+                static get is() {
+                    return 'mi-carro';
+                }
+                static get properties() {
+                    return {
+                        buscador: {
+                            type: String,
+                        },
+                        anio: {
+                            type: String
+                        },
+                        clasee: {
+                            type: String
+                        }
+                    };
+                }
+            }
+            customElements.define(MiCarro.is, MiCarro);
+        </script>
+    </dom-module>
+
+    <dom-module id="mi-hijo">
+        <template>
+                <style>
+                    :host{ display: block; background-color: green;}
+                </style>            
+        <h2>NOMBRE: [[buscador]] <br> </h2>
+
+        <template is="dom-if" if="[[muestraMarca]]">
+                <h2>Marca: [[marquita]]</h2>
+        </template>
+
+        <h2>Modelo: <input type="text" value="{{anio::input}}"></h2>
+        </template>
+        <script>
+            class MiHijo extends Polymer.Element {
+                static get is() {
+                    return 'mi-hijo';
+                }
+                static get properties() {
+                    return {
+                        carros: {
+                            type: Array,
+                            value: [{
+                                marca: "BMW",
+                                modelo: "X2"
+                            }, {
+                                marca: "Audi",
+                                modelo: "A3"
+                            }, {
+                                marca: "Mazda",
+                                modelo: "Empire"
+                            }, {
+                                marca: "BMW",
+                                modelo: "X3"
+                            }, {
+                                marca: "VolksWagen",
+                                modelo: "bocho"
+                            }]
+                        },
+                        anio: {
+                            type: String,
+                            notify: true
+                        },
+                        buscador: {
+                            type: String,
+                            observer: "consultador"
+                        },
+                        muestraMarca: {
+                            type: Boolean,
+                            value: false
+                        },
+                        marquita: {
+                            type: String
+                        },
+                        clasee: {
+                            type: String,
+                            notify: true
+                        }
+                    }
+                }
+
+                consultador() {
+                    //buscamos al carro con findIndex
+                    /*                 
+                    let posicion = this.carros.findIndex((item) => item.modelo == this.buscador)
+                    if (posicion >= 0) {
+                        this.marquita = this.carros[posicion].marca;
+                        this.muestraMarca = true;
+                        this.clasee = 'azul'
+                    } else {
+                        this.muestraMarca = false;
+                        this.clasee = 'rojo'
+                    }*/
+                    //ahora con filter
+                    let elemento = this.carros.filter((item) => item.modelo == this.buscador);
+                    if (elemento.length > 0) {
+                        this.marquita = elemento[0].marca;
+                        this.muestraMarca = true;
+                        this.clasee = 'azul'
+                    } else {
+                        this.muestraMarca = false;
+                        this.clasee = 'rojo'
+                    }
+                }
+            }
+            customElements.define(MiHijo.is, MiHijo);
+        </script>
+    </dom-module>
+
+
+</body>
+
+</html>

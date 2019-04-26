@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <base href="https://cdn.rawgit.com/download/polymer-cdn/2.6.0/lib/">
+    <script src="webcomponentsjs/webcomponents-loader.js"></script>
+    <link rel="import" href="iron-ajax/iron-ajax.html">
+    <link rel="import" href="polymer/polymer-element.html">
+</head>
+
+<body>
+
+    <polymer-rotacion></polymer-rotacion>
+
+    <dom-module id="polymer-rotacion">
+        <template>
+            <style>
+                :host{ display: block; background-color: cadetblue;}
+                .azul{  background-color: blue;}
+                .verde{ background-color: green}
+                .desaparecedor { display: none;}
+            </style>
+            <h2>Array Circular</h2><br>
+            <hr>
+            Size: <input type="number" value="{{tamanio::input}}">  Rotaciones: <input type="number" value="{{rotaciones::input}}" max="[[tamanio]]" min=0>
+            <hr>
+            <br>
+
+            <h4>Arreglo Generado</h4>
+            <template is="dom-repeat" items="[[arregloCreado]]">
+                <button class$="[[clase]]" on-mouseover="pintaVerde" on-mouseout="pintaAzul">[[item]]</button>
+            </template><br>
+
+        <h4>Arr Rotado</h4>
+        <template is="dom-repeat" items="[[arregloRotado]]">
+                <button class$="[[clase]]" on-mouseover="pintaVerde" on-mouseout="desaparece">[[item]]</button>
+            </template>
+        </template>
+        <script>
+            class PolymerRotacion extends Polymer.Element {
+                static get is() {
+                    return 'polymer-rotacion'
+                }
+                static get properties() {
+                    return {
+                        tamanio: {
+                            type: Number,
+                            value: 5,
+                            observer: "generaArreglo"
+                        },
+                        rotaciones: {
+                            type: Number,
+                            value: 1,
+                            observer: "rotaArreglo"
+                        },
+                        arregloCreado: {
+                            type: Array,
+                            value: []
+                        },
+                        arregloRotado: {
+                            type: Array,
+                            value: []
+                        },
+                        clase: {
+                            type: String,
+                            value: 'azul'
+                        }
+                    };
+                }
+
+                generaArreglo() {
+                    this.rotaciones = 1;
+                    this.arregloCreado = []
+                    for (let i = 0; i < this.tamanio; i++) {
+                        this.arregloCreado.push(parseInt(Math.random() * (20 - 10) + 10));
+                    }
+                    this.rotaArreglo();
+                }
+
+                rotaArreglo() {
+                    var temporal
+                    this.arregloRotado = []
+                    temporal = this.arregloCreado.slice((this.arregloCreado.length - this.rotaciones), this.arregloCreado.length)
+                    var arrTemp = this.arregloRotado.concat(this.arregloCreado);
+                    for (let i = 0; i < this.rotaciones; i++) {
+                        arrTemp.pop()
+                    }
+                    this.arregloRotado = temporal.concat(arrTemp);
+                }
+
+                pintaVerde(e) {
+                    e.target.classList.remove('azul');
+                    e.target.classList.add('verde');
+                }
+                pintaAzul(e) {
+                    e.target.classList.remove('verde');
+                    e.target.classList.add('azul');
+                }
+                desaparece(e) {
+                    e.target.classList.remove('verde');
+                    e.target.classList.add('desaparecedor');
+                }
+            }
+            customElements.define(PolymerRotacion.is, PolymerRotacion);
+        </script>
+    </dom-module>
+
+</body>
+
+</html>

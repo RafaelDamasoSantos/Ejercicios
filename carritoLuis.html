@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="https://cdn.rawgit.com/download/polymer-cdn/2.6.0/lib/webcomponentsjs/webcomponents-loader.js"></script>
+    <link rel="import" href="https://cdn.rawgit.com/download/polymer-cdn/2.6.0/lib/iron-ajax/iron-ajax.html">
+    <link rel="import" href="https://cdn.rawgit.com/download/polymer-cdn/2.6.0/lib/polymer/polymer-element.html">
+</head>
+
+<body>
+    <carrito-luis></carrito-luis>
+
+    <dom-module id="carrito-luis">
+        <template>
+            <style>
+                :host{ display: block; background-color: darkcyan;}
+                table {text-align: center; border:double;}
+                img { width: 100px; height: 100px;}
+            </style>
+            <h2>Tianguis</h2>
+            <table>
+                <tr>
+                    <td on-click="agregaFruta"><img alt="Manzana" src="https://png.pngtree.com/element_pic/17/09/09/7e91f5981eead6043888268d34b12a98.jpg" ></td>    
+                    <td on-click="agregaFruta"><img alt="Pera" src="https://png.pngtree.com/element_pic/17/03/18/d4fb7adfd86e6c8929cc4e3ae7d8f1f4.jpg"></td>    
+                    <td on-click="agregaFruta"><img alt="Uva" src="https://img.lovepik.com/element/40044/7035.png_860.png!/fw/562"></td>    
+                    <td on-click="agregaFruta"><img alt="Kiwi" src="https://banner2.kisspng.com/20180328/krq/kisspng-juice-smoothie-kiwifruit-slice-kiwi-5abb8c1a991d38.2919996615222405386272.jpg"></td>
+                </tr>
+            </table>
+            <carrito-hijo compra="[[compra]]"></carrito-hijo>
+        </template>
+        <script>
+            class CarritoLuis extends Polymer.Element {
+                static get is() {
+                    return 'carrito-luis';
+                }
+                static get properties() {
+                    return {
+                        compra: {
+                            type: Array,
+                            value: [],
+                            notify: true
+                        }
+                    };
+                }
+
+                agregaFruta(event) {
+                    let arr = new Array();
+
+                    //console.log(event.target.alt)
+                    this.compra.push(event.target.alt);
+                    console.log(this.compra)
+
+                    this.set('compra', arr.concat(this.compra.slice(0)));
+                    console.log(this.compra)
+                }
+
+            }
+            customElements.define(CarritoLuis.is, CarritoLuis);
+        </script>
+    </dom-module>
+
+    <dom-module id="carrito-hijo">
+        <template>
+            <style>
+                table { text-align: center; margin-left: 100px; width: 200px;}
+            </style>
+            <table>
+                <tr><td>Carrito</td></tr>
+                <template is="dom-repeat" items="[[compra]]">
+                <tr><td>[[item]]</td></tr>
+                </template>
+        </table>
+        </template>
+        <script>
+            class CarritoHijo extends Polymer.Element {
+                static get is() {
+                    return 'carrito-hijo'
+                }
+                static get properties() {
+                    return {
+                        compra: {
+                            type: Array
+
+                        }
+                    };
+                }
+            }
+            customElements.define(CarritoHijo.is, CarritoHijo);
+        </script>
+    </dom-module>
+
+</body>
+
+</html>
